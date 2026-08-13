@@ -15,6 +15,8 @@ datasource db {
 model Test {
   id        Int             @id @default(autoincrement())
   name      String
+  examType  String          @default("JEE Main") // "JEE Main" | "JEE Advanced" | "EAPCET"
+  notes     String?
   date      DateTime        @default(now())
   results   SubjectResult[]
 }

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import AccuracyChart from "@/components/AccuracyChart";
 import ScoreChart from "@/components/ScoreChart";
+import OverallProgressChart from "@/components/OverallProgressChart";
+import TestComparison from "@/components/TestComparison";
 
 const SUBJECTS = ["Physics", "Chemistry", "Maths"];
 
@@ -58,6 +60,16 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      <section className="bg-white rounded-xl border p-5">
+        <h2 className="text-lg font-semibold mb-4">Overall Progress</h2>
+        <OverallProgressChart tests={tests} />
+      </section>
+
+      <section className="bg-white rounded-xl border p-5">
+        <h2 className="text-lg font-semibold mb-4">Latest vs Previous Test</h2>
+        <TestComparison tests={tests} />
+      </section>
+
       {SUBJECTS.map((subject) => (
         <section key={subject} className="bg-white rounded-xl border p-5">
           <h2 className="text-lg font-semibold mb-4">{subject}</h2>
@@ -85,6 +97,7 @@ export default function DashboardPage() {
           <thead>
             <tr className="text-left text-slate-500 border-b">
               <th className="py-2">Test</th>
+              <th>Exam</th>
               <th>Date</th>
               <th>Physics</th>
               <th>Chemistry</th>
@@ -100,7 +113,15 @@ export default function DashboardPage() {
               const total = SUBJECTS.reduce((sum, s) => sum + scoreFor(s), 0);
               return (
                 <tr key={test.id} className="border-b last:border-0">
-                  <td className="py-2 font-medium">{test.name}</td>
+                  <td className="py-2 font-medium">
+                    {test.name}
+                    {test.notes && (
+                      <p className="text-xs text-slate-400 font-normal mt-0.5">
+                        {test.notes}
+                      </p>
+                    )}
+                  </td>
+                  <td className="text-slate-500">{test.examType}</td>
                   <td>{new Date(test.date).toLocaleDateString()}</td>
                   <td>{scoreFor("Physics")}</td>
                   <td>{scoreFor("Chemistry")}</td>

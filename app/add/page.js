@@ -11,6 +11,8 @@ const emptySubject = { mcqCorrect: "", mcqWrong: "", numCorrect: "", numWrong: "
 export default function AddTestPage() {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [examType, setExamType] = useState("JEE Main");
+  const [notes, setNotes] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [subjects, setSubjects] = useState({
     Physics: { ...emptySubject },
@@ -61,7 +63,7 @@ export default function AddTestPage() {
     const res = await fetch("/api/tests", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, date, subjects }),
+      body: JSON.stringify({ name, examType, notes, date, subjects }),
     });
     setSaving(false);
 
@@ -95,6 +97,30 @@ export default function AddTestPage() {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Exam</label>
+            <select
+              value={examType}
+              onChange={(e) => setExamType(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2"
+            >
+              <option>JEE Main</option>
+              <option>JEE Advanced</option>
+              <option>EAPCET</option>
+            </select>
+          </div>
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium mb-1">
+              Notes <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="e.g. ran out of time in Maths, silly mistakes in Chemistry organic..."
+              rows={2}
               className="w-full border rounded-lg px-3 py-2"
             />
           </div>

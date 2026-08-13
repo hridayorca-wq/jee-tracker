@@ -65,6 +65,8 @@ export async function POST(request) {
   const test = await prisma.test.create({
     data: {
       name: body.name,
+      examType: body.examType || "JEE Main",
+      notes: body.notes || null,
       date: body.date ? new Date(body.date) : new Date(),
       results: { create: resultsData },
     },
