@@ -1,0 +1,21 @@
+-- CreateTable
+CREATE TABLE "Test" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "SubjectResult" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "subject" TEXT NOT NULL,
+    "mcqCorrect" INTEGER NOT NULL DEFAULT 0,
+    "mcqWrong" INTEGER NOT NULL DEFAULT 0,
+    "mcqUnattempted" INTEGER NOT NULL DEFAULT 0,
+    "numCorrect" INTEGER NOT NULL DEFAULT 0,
+    "numWrong" INTEGER NOT NULL DEFAULT 0,
+    "numUnattempted" INTEGER NOT NULL DEFAULT 0,
+    "score" INTEGER NOT NULL DEFAULT 0,
+    "testId" INTEGER NOT NULL,
+    CONSTRAINT "SubjectResult_testId_fkey" FOREIGN KEY ("testId") REFERENCES "Test" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);

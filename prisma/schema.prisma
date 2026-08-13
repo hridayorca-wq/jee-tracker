@@ -1,0 +1,38 @@
+// This file tells Prisma (our database helper) what our data looks like.
+// Think of "models" below as spreadsheet tables.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// One row = one mock test you took (e.g. "JEE Main Mock 5")
+model Test {
+  id        Int             @id @default(autoincrement())
+  name      String
+  date      DateTime        @default(now())
+  results   SubjectResult[]
+}
+
+// One row = one subject's performance within a test (Physics / Chemistry / Maths)
+model SubjectResult {
+  id              Int    @id @default(autoincrement())
+  subject         String // "Physics" | "Chemistry" | "Maths"
+
+  mcqCorrect      Int    @default(0) // out of 20
+  mcqWrong        Int    @default(0)
+  mcqUnattempted  Int    @default(0)
+
+  numCorrect      Int    @default(0) // out of 5 (numerical/integer type)
+  numWrong        Int    @default(0)
+  numUnattempted  Int    @default(0)
+
+  score           Int    @default(0) // auto-calculated, max 100
+
+  test            Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId          Int
+}
