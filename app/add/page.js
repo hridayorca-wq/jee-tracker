@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { calculateScore, unattempted, MCQ_TOTAL, NUM_TOTAL } from "@/lib/scoring";
 
@@ -10,6 +10,43 @@ const emptySubject = { mcqCorrect: "", mcqWrong: "", numCorrect: "", numWrong: "
 
 export default function AddTestPage() {
   const router = useRouter();
+
+  const [authChecked, setAuthChecked] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth-check")
+      .then((res) => res.json())
+      .then((data) => {
+        setAuthenticated(data.authenticated);
+        setAuthChecked(true);
+      });
+  }, []);
+
+  async function handleUnlock(e) {
+    e.preventDefault();
+    setAuthError("");
+    setAuthLoading(true);
+
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: passwordInput }),
+    });
+
+    setAuthLoading(false);
+
+    if (res.ok) {
+      setAuthenticated(true);
+    } else {
+      const data = await res.json();
+      setAuthError(data.error || "Wrong password");
+    }
+  }
+
   const [name, setName] = useState("");
   const [examType, setExamType] = useState("JEE Main");
   const [notes, setNotes] = useState("");
@@ -73,6 +110,45 @@ export default function AddTestPage() {
       const data = await res.json();
       setError(data.error || "Something went wrong");
     }
+  }
+
+  if (!authChecked) {
+    return <p className="text-slate-500">Checking...</p>;
+  }
+
+  if (!authenticated) {
+    return (
+      <div className="max-w-sm mx-auto mt-16">
+        <form
+          onSubmit={handleUnlock}
+          className="bg-white border rounded-xl p-8 shadow-sm"
+        >
+          <h1 className="text-xl font-bold mb-1 text-indigo-700">Add a Test</h1>
+          <p className="text-slate-500 text-sm mb-6">
+            This page is password protected. Enter the password to continue.
+          </p>
+
+          <input
+            type="password"
+            autoFocus
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            placeholder="Password"
+            className="w-full border rounded-lg px-3 py-2 mb-4"
+          />
+
+          {authError && <p className="text-red-500 text-sm mb-4">{authError}</p>}
+
+          <button
+            type="submit"
+            disabled={authLoading}
+            className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {authLoading ? "Checking..." : "Unlock"}
+          </button>
+        </form>
+      </div>
+    );
   }
 
   return (
