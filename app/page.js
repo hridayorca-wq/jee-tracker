@@ -58,6 +58,9 @@ export default function DashboardPage() {
         <p className="text-slate-500">
           {tests.length} test{tests.length > 1 ? "s" : ""} logged
         </p>
+        <p className="text-slate-400 text-sm mt-1">
+          Track your JEE progress, one mock test at a time. Keep showing up — the graphs below tell the real story.
+        </p>
       </div>
 
       <section className="bg-white rounded-xl border p-5">
